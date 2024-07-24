@@ -1,7 +1,9 @@
 app_name = "frappe_enhanced_gridview"
 app_title = "Frappe Enhanced Gridview"
 app_publisher = "Nesscale Solutions Private Limited"
-app_description = "Frappe Grid view with scrollablee child table and allow more than 10 columns"
+app_description = (
+    "Frappe Grid view with scrollablee child table and allow more than 10 columns"
+)
 app_email = "info@nesscale.com"
 app_license = "mit"
 # required_apps = []
@@ -12,6 +14,9 @@ app_license = "mit"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/frappe_enhanced_gridview/css/frappe_enhanced_gridview.css"
 # app_include_js = "/assets/frappe_enhanced_gridview/js/frappe_enhanced_gridview.js"
+app_include_css = ["enhanced_gridview.bundle.css"]
+app_include_js = ["enhanced_gridview.bundle.js"]
+
 
 # include js, css files in header of web template
 # web_include_css = "/assets/frappe_enhanced_gridview/css/frappe_enhanced_gridview.css"
@@ -226,4 +231,3 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
