@@ -16,10 +16,124 @@ class Custom_GridRow extends GridRow {
 		// 	frappe.throw(__("The total column width cannot be more than 10."));
 		// }
 	}
+
+	show_form(){
+		super.show_form()
+
+		$(this.grid.form_grid).removeClass("relative-important");
+	}
+	hide_form(){
+		super.hide_form()
+
+		$(this.grid.form_grid).addClass("relative-important");
+	}
 }
 
 
 class Custom_Grid extends Grid {
+
+	make() {
+		let template = `
+			<div class="grid-field">
+				<label class="control-label">${__(this.df.label || "")}</label>
+				<span class="help"></span>
+				<p class="text-muted small grid-description"></p>
+				<div class="grid-custom-buttons"></div>
+				<div class="form-grid-container">
+					<div class="form-grid">
+						<div class="grid-heading-row"></div>
+						<div class="grid-body">
+							<div class="rows"></div>
+							<div class="grid-empty text-center">
+								<img
+									src="/assets/frappe/images/ui-states/grid-empty-state.svg"
+									alt="Grid Empty State"
+									class="grid-empty-illustration"
+								>
+								${__("No Data")}
+							</div>
+						</div>
+					</div>
+					<input type="range" min="1" max="100" value="1" class="enhanced-slider">
+				</div>
+				<div class="small form-clickable-section grid-footer">
+					<div class="flex justify-between">
+						<div class="grid-buttons">
+							<button type="button" class="btn btn-xs btn-danger grid-remove-rows hidden"
+								data-action="delete_rows">
+								${__("Delete")}
+							</button>
+							<button type="button" class="btn btn-xs btn-danger grid-remove-all-rows hidden"
+								data-action="delete_all_rows">
+								${__("Delete All")}
+							</button>
+							<!-- hack to allow firefox include this in tabs -->
+							<button type="button" class="btn btn-xs btn-secondary grid-add-row">
+								${__("Add Row")}
+							</button>
+							<button type="button" class="grid-add-multiple-rows btn btn-xs btn-secondary hidden">
+								${__("Add Multiple")}</a>
+							</button>
+						</div>
+						<div class="grid-pagination">
+						</div>
+						<div class="grid-bulk-actions text-right">
+							<button type="button" class="grid-download btn btn-xs btn-secondary hidden">
+								${__("Download")}
+							</button>
+							<button type="button" class="grid-upload btn btn-xs btn-secondary hidden">
+								${__("Upload")}
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		`;
+
+		this.wrapper = $(template).appendTo(this.parent);
+		$(this.parent).addClass("form-group");
+		this.set_grid_description();
+		this.set_doc_url();
+
+		frappe.utils.bind_actions_with_object(this.wrapper, this);
+
+		this.form_grid = this.wrapper.find(".form-grid");
+
+
+		// enhance slider changes
+		this.form_grid.addClass("relative-important");
+		this.form_grid_container = this.wrapper.find(".form-grid-container");
+		this.enhanced_slider = this.wrapper.find(".enhanced-slider");
+		let me = this
+		this.enhanced_slider.on("input", function (event) {
+			const value = event.target.value;
+			me.form_grid.css("left", `-${value}px`)
+		})
+		// this.form_grid_container.on('wheel', function (event) {
+		// 	const delta = event.deltaY || event.detail || -event.wheelDelta;
+        //     let newValue = parseInt(me.enhanced_slider.prop("value"), 10) - delta / 10;
+		// 	console.log(newValue)
+        //     newValue = Math.max(me.enhanced_slider.prop("min"), Math.min(me.enhanced_slider.prop("max"), newValue));
+        //     me.enhanced_slider.prop("value",newValue)
+		// })
+
+
+		this.setup_add_row();
+
+		this.setup_grid_pagination();
+
+		this.custom_buttons = {};
+		this.grid_buttons = this.wrapper.find(".grid-buttons");
+		this.grid_custom_buttons = this.wrapper.find(".grid-custom-buttons");
+		this.remove_rows_button = this.grid_buttons.find(".grid-remove-rows");
+		this.remove_all_rows_button = this.grid_buttons.find(".grid-remove-all-rows");
+
+		this.setup_allow_bulk_edit();
+		this.setup_check();
+		if (this.df.on_setup) {
+			this.df.on_setup(this);
+		}
+	}
 
     make_head() {
 		if (this.prevent_build) return;
@@ -175,7 +289,8 @@ class Custom_Grid extends Grid {
 			passes++;
 		}
 	
-		
+		// set width of scrollable area
+		this.enhanced_slider.prop("max",this.visible_columns.length*200 - this.form_grid_container[0].clientWidth + 300)
 	}
 }
 
@@ -193,4 +308,7 @@ frappe.ui.form.ControlTable = class CustomControlTable extends frappe.ui.form.Co
 		});
     }
 
+	
+
 }
+
