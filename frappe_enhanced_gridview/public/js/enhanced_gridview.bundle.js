@@ -298,7 +298,12 @@ class Custom_Grid extends Grid {
 
 
 	setup_scrollable_width() {
-		this.enhanced_slider.prop("max", this.visible_columns.length * 200 - this.form_grid_container[0].clientWidth + 300)
+		let width = 200
+		this.visible_columns.forEach(column => {
+			width += column[1] * 50 + 100
+		});
+
+		this.enhanced_slider.prop("max", width - this.form_grid_container[0].clientWidth)
 	}
 
 }
