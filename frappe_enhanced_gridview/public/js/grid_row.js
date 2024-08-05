@@ -868,7 +868,6 @@ export default class GridRow {
 				? " text-right"
 				: "";
 		add_class += ["Check"].indexOf(df.fieldtype) !== -1 ? " text-center" : "";
-		add_class += " " + colsize + " "
 
 		let grid;
 		let grid_container;
