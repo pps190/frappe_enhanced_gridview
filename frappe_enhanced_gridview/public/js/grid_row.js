@@ -537,9 +537,8 @@ export default class GridRow {
 
 				fields += `
 					<div class='control-input flex align-center form-control fields_order sortable-handle sortable'
-						style='display: block; margin-bottom: 5px; padding: 0 8px; cursor: pointer; height: 32px;' data-fieldname='${
-							docfield.fieldname
-						}'
+						style='display: block; margin-bottom: 5px; padding: 0 8px; cursor: pointer; height: 32px;' data-fieldname='${docfield.fieldname
+					}'
 						data-label='${docfield.label}' data-type='${docfield.fieldtype}'>
 
 						<div class='row'>
@@ -550,8 +549,8 @@ export default class GridRow {
 								${__(docfield.label, null, docfield.parent)}
 							</div>
 							<div class='col-3 col-md-2' style='padding-left:0px; padding-top: 2px; margin-top:-2px;' title='${__(
-								"Columns"
-							)}'>
+						"Columns"
+					)}'>
 								<input class='form-control column-width my-1 input-xs text-right'
 								style='height: 24px; max-width: 80px; background: var(--bg-color);'
 									value='${docfield.columns || cint(d.columns)}'
@@ -869,6 +868,7 @@ export default class GridRow {
 				? " text-right"
 				: "";
 		add_class += ["Check"].indexOf(df.fieldtype) !== -1 ? " text-center" : "";
+		add_class += " " + colsize + " "
 
 		let grid;
 		let grid_container;

@@ -15,6 +15,11 @@
 
     .grid-heading-row {
         height: auto;
+
+        .grid-row .static-area.ellipsis {
+            text-overflow: unset;
+            white-space: normal;
+        }
     }
 
     .grid-heading-row .grid-static-col,
@@ -96,10 +101,7 @@
                 min-width: 50px !important;
             }
 
-            .static-area.ellipsis {
-                text-overflow: unset;
-                white-space: normal;
-            }
+
         }
     }
 
@@ -126,15 +128,15 @@
         -webkit-appearance: none;
         appearance: none;
         width: 50%;
-        height: 8px;
-        background: #04AA6D;
+        height: 5px;
+        background-color: black;
         cursor: pointer;
     }
 
     .enhanced-slider::-moz-range-thumb {
         width: 200px;
-        height: 8px;
-        background: #04AA6D;
+        height: 5px;
+        background-color: black;
         cursor: pointer;
     }
 }

@@ -2,8 +2,8 @@ import GridRow from './grid_row';
 import Grid from './grid';
 
 class Custom_GridRow extends GridRow {
-    
-    validate_columns_width() {
+
+	validate_columns_width() {
 		let total_column_width = 0.0;
 
 		this.selected_columns_for_grid.forEach((row) => {
@@ -17,12 +17,12 @@ class Custom_GridRow extends GridRow {
 		// }
 	}
 
-	show_form(){
+	show_form() {
 		super.show_form()
 
 		$(this.grid.form_grid).removeClass("relative-important");
 	}
-	hide_form(){
+	hide_form() {
 		super.hide_form()
 
 		$(this.grid.form_grid).addClass("relative-important");
@@ -108,13 +108,14 @@ class Custom_Grid extends Grid {
 		this.enhanced_slider.on("input", function (event) {
 			const value = event.target.value;
 			me.form_grid.css("left", `-${value}px`)
+			me.setup_scrollable_width()
 		})
 		// this.form_grid_container.on('wheel', function (event) {
 		// 	const delta = event.deltaY || event.detail || -event.wheelDelta;
-        //     let newValue = parseInt(me.enhanced_slider.prop("value"), 10) - delta / 10;
+		//     let newValue = parseInt(me.enhanced_slider.prop("value"), 10) - delta / 10;
 		// 	console.log(newValue)
-        //     newValue = Math.max(me.enhanced_slider.prop("min"), Math.min(me.enhanced_slider.prop("max"), newValue));
-        //     me.enhanced_slider.prop("value",newValue)
+		//     newValue = Math.max(me.enhanced_slider.prop("min"), Math.min(me.enhanced_slider.prop("max"), newValue));
+		//     me.enhanced_slider.prop("value",newValue)
 		// })
 
 
@@ -133,16 +134,17 @@ class Custom_Grid extends Grid {
 		if (this.df.on_setup) {
 			this.df.on_setup(this);
 		}
+
 	}
 
-    make_head() {
+	make_head() {
 		if (this.prevent_build) return;
 
 		// labels
 		if (this.header_row) {
 			$(this.parent).find(".grid-heading-row .grid-row").remove();
 		}
-        // implement custom class
+		// implement custom class
 		this.header_row = new Custom_GridRow({
 			parent: $(this.parent).find(".grid-heading-row"),
 			parent_df: this.df,
@@ -151,7 +153,7 @@ class Custom_Grid extends Grid {
 			grid: this,
 			configure_columns: true,
 		});
-        // implement custom class
+		// implement custom class
 		this.header_search = new Custom_GridRow({
 			parent: $(this.parent).find(".grid-heading-row"),
 			parent_df: this.df,
@@ -170,7 +172,7 @@ class Custom_Grid extends Grid {
 		this.filter_applied && this.update_search_columns();
 	}
 
-    render_result_rows($rows, append_row) {
+	render_result_rows($rows, append_row) {
 		let result_length = this.grid_pagination.get_result_length();
 		let page_index = this.grid_pagination.page_index;
 		let page_length = this.grid_pagination.page_length;
@@ -194,7 +196,7 @@ class Custom_Grid extends Grid {
 				grid_row.doc = d;
 				grid_row.refresh();
 			} else {
-                // implement custom class
+				// implement custom class
 				grid_row = new Custom_GridRow({
 					parent: $rows,
 					parent_df: this.df,
@@ -212,7 +214,7 @@ class Custom_Grid extends Grid {
 
 	setup_visible_columns() {
 		if (this.visible_columns && this.visible_columns.length > 0) return;
-	
+
 		this.user_defined_columns = [];
 		this.setup_user_defined_columns();
 		var total_colsize = 1,
@@ -220,18 +222,18 @@ class Custom_Grid extends Grid {
 				this.user_defined_columns && this.user_defined_columns.length > 0
 					? this.user_defined_columns
 					: this.editable_fields || this.docfields;
-	
+
 		this.visible_columns = [];
-	
+
 		for (var ci in fields) {
 			var _df = fields[ci];
-	
+
 			// get docfield if from fieldname
 			df =
 				this.user_defined_columns && this.user_defined_columns.length > 0
 					? _df
 					: this.fields_map[_df.fieldname];
-	
+
 			if (
 				df &&
 				!df.hidden &&
@@ -244,7 +246,7 @@ class Custom_Grid extends Grid {
 				} else {
 					this.update_default_colsize(df);
 				}
-	
+
 				// attach formatter on refresh
 				if (
 					df.fieldtype == "Link" &&
@@ -257,58 +259,66 @@ class Custom_Grid extends Grid {
 						df.formatter = docfield.formatter;
 					}
 				}
-	
+
 				total_colsize += df.colsize;
 				if (total_colsize > 100) return false; // Increased limit to 20
 				this.visible_columns.push([df, df.colsize]);
 			}
+
 		}
-	
+
 		// redistribute if total-col size is less than 12
 		var passes = 0;
-		while (total_colsize < 100 && passes < 100) { // Adjusted loop conditions
+		while (total_colsize < 11 && passes < 12) { // Adjusted loop conditions
 			for (var i in this.visible_columns) {
 				var df = this.visible_columns[i][0];
 				var colsize = this.visible_columns[i][1];
-				if (colsize > 1 && colsize < 20 && frappe.model.is_non_std_field(df.fieldname)) {
+				if (colsize > 1 && colsize < 11 && frappe.model.is_non_std_field(df.fieldname)) {
 					if (
 						passes < 3 &&
 						["Int", "Currency", "Float", "Check", "Percent"].indexOf(df.fieldtype) !==
-							-1
+						-1
 					) {
 						// don't increase col size of these fields in first 3 passes
 						continue;
 					}
-	
+
 					this.visible_columns[i][1] += 1;
 					total_colsize++;
 				}
-	
-				if (total_colsize > 100) break;
+
+				if (total_colsize > 10) break;
 			}
 			passes++;
 		}
-	
+
 		// set width of scrollable area
-		this.enhanced_slider.prop("max",this.visible_columns.length*200 - this.form_grid_container[0].clientWidth + 300)
+		this.setup_scrollable_width()
 	}
+
+
+	setup_scrollable_width() {
+		this.enhanced_slider.prop("max", this.visible_columns.length * 200 - this.form_grid_container[0].clientWidth + 300)
+	}
+
 }
 
 
 frappe.ui.form.ControlTable = class CustomControlTable extends frappe.ui.form.ControlTable {
-    make() {
+	make() {
 		super.make();
 
-        // add title if prev field is not column / section heading or html
+		// add title if prev field is not column / section heading or html
 		this.grid = new Custom_Grid({
 			frm: this.frm,
 			df: this.df,
 			parent: this.wrapper,
 			control: this,
 		});
-    }
 
-	
+	}
+
+
 
 }
 
