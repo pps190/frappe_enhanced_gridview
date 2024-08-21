@@ -39,7 +39,7 @@ class Custom_Grid extends Grid {
 				<span class="help"></span>
 				<p class="text-muted small grid-description"></p>
 				<div class="grid-custom-buttons"></div>
-				<div class="form-grid-container">
+				<div class="form-grid-container enhanced-grid-container">
 					<div class="form-grid">
 						<div class="grid-heading-row"></div>
 						<div class="grid-body">
@@ -110,13 +110,9 @@ class Custom_Grid extends Grid {
 			me.form_grid.css("left", `-${value}px`)
 			me.setup_scrollable_width()
 		})
-		// this.form_grid_container.on('wheel', function (event) {
-		// 	const delta = event.deltaY || event.detail || -event.wheelDelta;
-		//     let newValue = parseInt(me.enhanced_slider.prop("value"), 10) - delta / 10;
-		// 	console.log(newValue)
-		//     newValue = Math.max(me.enhanced_slider.prop("min"), Math.min(me.enhanced_slider.prop("max"), newValue));
-		//     me.enhanced_slider.prop("value",newValue)
-		// })
+
+
+
 
 
 		this.setup_add_row();
@@ -134,6 +130,7 @@ class Custom_Grid extends Grid {
 		if (this.df.on_setup) {
 			this.df.on_setup(this);
 		}
+
 
 	}
 
@@ -294,6 +291,7 @@ class Custom_Grid extends Grid {
 
 		// set width of scrollable area
 		this.setup_scrollable_width()
+		this.verify_overflow_columns_width()
 	}
 
 
@@ -302,8 +300,30 @@ class Custom_Grid extends Grid {
 		this.visible_columns.forEach(column => {
 			width += column[1] * 50 + 100
 		});
+		if (width > this.form_grid_container[0].clientWidth) {
+			this.enhanced_slider.prop("max", width - this.form_grid_container[0].clientWidth)
+			this.enhanced_slider.prop("style", "display:block")
+		} else {
+			this.form_grid.css("left", `0px`)
+			this.enhanced_slider.prop("max", this.form_grid_container[0].clientWidth)
+			this.enhanced_slider.prop("style", "display:none")
+			this.enhanced_slider.prop("value", 0)
+		}
+	}
 
-		this.enhanced_slider.prop("max", width - this.form_grid_container[0].clientWidth)
+	verify_overflow_columns_width() {
+		let width = 200
+		this.visible_columns.forEach(column => {
+			width += column[1] * 50 + 100
+		});
+
+		if (width > this.form_grid_container[0].clientWidth) {
+			this.form_grid_container.addClass('enhanced-grid-container')
+			this.enhanced_slider.prop("style", "display:block")
+		} else {
+			this.enhanced_slider.prop("style", "display:none")
+			this.enhanced_slider.prop("value", 0)
+		}
 	}
 
 }
