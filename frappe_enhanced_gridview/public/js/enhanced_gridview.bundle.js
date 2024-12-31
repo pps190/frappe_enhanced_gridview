@@ -230,7 +230,6 @@ class Custom_Grid extends Grid {
 				this.user_defined_columns && this.user_defined_columns.length > 0
 					? _df
 					: this.fields_map[_df.fieldname];
-
 			if (
 				df &&
 				!df.hidden &&
@@ -332,6 +331,10 @@ class Custom_Grid extends Grid {
 frappe.ui.form.ControlTable = class CustomControlTable extends frappe.ui.form.ControlTable {
 	make() {
 		super.make();
+
+		if (this.frm.doctype === "Item") {
+			return;
+		}
 
 		// add title if prev field is not column / section heading or html
 		this.grid = new Custom_Grid({
