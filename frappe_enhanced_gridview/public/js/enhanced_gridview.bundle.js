@@ -332,7 +332,7 @@ frappe.ui.form.ControlTable = class CustomControlTable extends frappe.ui.form.Co
 	make() {
 		super.make();
 
-		if (this.frm.doctype === "Item") {
+		if (["Item", "Customer", "Customer Group"].includes(this.frm.doctype)) {
 			return;
 		}
 
