@@ -333,13 +333,20 @@ frappe.ui.form.ControlTable = class CustomControlTable extends frappe.ui.form.Co
 	make() {
 		super.make();
 
-		// add title if prev field is not column / section heading or html
-		this.grid = new Custom_Grid({
-			frm: this.frm,
-			df: this.df,
-			parent: this.wrapper,
-			control: this,
-		});
+		if (
+			!frappe.boot.frappe_enhanced_gridview ||
+			frappe.boot.frappe_enhanced_gridview[this.df.options] &&
+			frappe.boot.frappe_enhanced_gridview[this.df.options][this.frm.doctype] &&
+			frappe.boot.frappe_enhanced_gridview[this.df.options][this.frm.doctype].includes(this.df.fieldname)
+		) {
+			// add title if prev field is not column / section heading or html
+			this.grid = new Custom_Grid({
+				frm: this.frm,
+				df: this.df,
+				parent: this.wrapper,
+				control: this,
+			});
+		}
 
 	}
 

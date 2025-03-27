@@ -231,3 +231,7 @@ app_include_js = ["enhanced_gridview.bundle.js"]
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
+
+extend_bootinfo = [
+	"frappe_enhanced_gridview.boot.add_bootinfo",
+]
